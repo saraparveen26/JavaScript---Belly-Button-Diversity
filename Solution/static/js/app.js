@@ -6,7 +6,7 @@ d3.json(url).then(function(data) {
   console.log(data);
 });
 
-// Initialize the dashboard at start up 
+// Initialize the dashboard
 function init() {
 
     // Use D3 to select the dropdown menu
@@ -37,20 +37,15 @@ function init() {
 
         // Build the initial plots
         // buildMetadata(sample_one);
-        barChart(sample_one);
-        // buildBubbleChart(sample_one);
-        // buildGaugeChart(sample_one);
+        charts(sample_one);
+        demoInfo(sample_one);
     });
     }
-      // Pull data for new subject into demo and visuals. 
-      function optionChanged(newSample) {
-        charts(newSample);
-        demo(newSample);
-      }
 
 
-// Initializes the page with a default plot
-function barChart(sampleID) {
+
+// Initialize the page with a default plot
+function charts(sampleID) {
 
     // Use D3 to retrieve all of the data
     d3.json(url).then((data) => {
@@ -68,7 +63,7 @@ function barChart(sampleID) {
     let otu_labels = firstSample.otu_labels;
     let sample_values = firstSample.sample_values;
 
-    let trace1 = {
+    let traceBar = {
         x: sample_values.slice(0, 10).reverse(),
         y: otu_ids.slice(0, 10).map(id => `OTU ${id}`).reverse(),
         text: otu_labels.slice(0, 10).reverse(),
@@ -76,9 +71,9 @@ function barChart(sampleID) {
         orientation: "h"
     };
 
-    let barData = [trace1];
+    let dataBar = [traceBar];
 
-    let layout = {
+    let layoutBar = {
         title: "Top 10 OTUs found in Individual " + sampleID,
         // margin:{
         //     l:100,
@@ -88,11 +83,71 @@ function barChart(sampleID) {
         // }
     }
   
-    Plotly.newPlot("bar", barData, layout);
+    Plotly.newPlot("bar", dataBar, layoutBar);
+
+    // Bubble chart
+    let traceBubble = {
+        x: otu_ids,
+        y: sample_values,
+        text: otu_labels,
+        mode: "markers",
+        marker: {
+            size: sample_values,
+            color: otu_ids,
+            colorscale: "Earth"
+        }
+    };
+
+    let dataBubble = [traceBubble];
+
+    let layoutBubble = {
+        title: "Sample information",
+        hovermode: "closest",
+        xaxis: {title: "OTU ID"}
+    };
+
+    Plotly.newPlot("bubble", dataBubble, layoutBubble);
   });
 };
   
 
+// Demographic Info
+function demoInfo(sampleID) {
 
+    // Use D3 to retrieve all of the data
+    d3.json(url).then((data) => {
+
+    // Retrieve all metadata
+    let metadata = data.metadata;
+
+    // Filter sample data by id
+    let filteredSample = metadata.filter(sample => sample.id == sampleID);
+
+    // Get the first sample
+    let firstSample = filteredSample[0]
+
+    // Use D3 to select the Demographic Info box and clear any existing data
+    let demoInfoBox = d3.select("#sample-metadata").html("");
+
+    // Use Object.entries to add each key/value pair to the panel
+    Object.entries(firstSample).forEach(([key, value]) => {
+
+        // // Log the individual key/value pairs as they are being appended to the metadata panel
+        // console.log(key,value);
+
+        demoInfoBox.append("h5").text(`${key.toUpperCase()}: ${value}`);
+        });
+
+  });
+};
+
+
+
+
+// Pull data for new subject into demo and visuals. 
+function optionChanged(newSample) {
+charts(newSample);
+demo(newSample);
+}
 
 init();
