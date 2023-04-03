@@ -6,63 +6,72 @@ d3.json(url).then(function(data) {
   console.log(data);
 });
 
-// Initialize the dashboard
+// INITIALIZE THE DASHBOARD
+// Create a function to initialize the details
 function init() {
 
     // Use D3 to select the dropdown menu
     let dropdownMenu = d3.select("#selDataset");
 
-    // Use D3 to get sample names and populate the drop-down selector
+    // Get the sample names and populate the dropdown options
     d3.json(url).then((data) => {
         
         // Set a variable for the sample names
         let names = data.names;
 
-        // Add  samples to dropdown menu
+        // Add sample names to the dropdown menu
         names.forEach((id) => {
 
-            // Log the value of id for each iteration of the loop
             console.log(id);
 
-            dropdownMenu.append("option")
-            .text(id)
-            .property("value",id);
+            dropdownMenu.append("option").text(id).property("value", id);
         });
 
-        // Set the first sample from the list
-        let sample_one = names[0];
+        // Get the first sample
+        let sampleFirst = names[0];
 
-        // Log the value of sample_one
-        console.log(sample_one);
+        // Console log the first sample details
+        console.log(sampleFirst);
 
-        // Build the initial plots
-        // buildMetadata(sample_one);
-        charts(sample_one);
-        demoInfo(sample_one);
+        // Create the initial plots and demographic info
+        charts(sampleFirst);
+        demoInfo(sampleFirst);
     });
     }
 
 
+// UPDATE THE CHARTS AND DEMOGRAPHIC INFO 
+// Change the charts and demographic info box based on dropdown selection
+function optionChanged(sampleNew) {
+    charts(sampleNew);
+    demoInfo(sampleNew);
+    }
 
-// Initialize the page with a default plot
+
+// BUILD THE BAR AND BUBBLE CHARTS   
+// Create a function to build the charts
 function charts(sampleID) {
 
-    // Use D3 to retrieve all of the data
+    // Use D3 to retrieve all data
     d3.json(url).then((data) => {
 
     // Retrieve all sample data
     let sampleData = data.samples;
 
-    // Filter sample data by id
+    // Filter sample data by sample id
     let filteredSample = sampleData.filter(sample => sample.id == sampleID);
 
     // Get the first sample
     let firstSample = filteredSample[0]
 
+    // Retrieve the data fields from sample
     let otu_ids = firstSample.otu_ids;
     let otu_labels = firstSample.otu_labels;
     let sample_values = firstSample.sample_values;
 
+    // ----- HORIZONTAL BAR CHART ----- //
+
+    // Create the trace for top 10 items for the bar chart
     let traceBar = {
         x: sample_values.slice(0, 10).reverse(),
         y: otu_ids.slice(0, 10).map(id => `OTU ${id}`).reverse(),
@@ -71,8 +80,10 @@ function charts(sampleID) {
         orientation: "h"
     };
 
+    // Create the data array for the bar chart
     let dataBar = [traceBar];
 
+    // Set layout details for the bar chart
     let layoutBar = {
         title: "Top 10 OTUs found in Individual " + sampleID,
         // margin:{
@@ -83,9 +94,13 @@ function charts(sampleID) {
         // }
     }
   
+    // Render the plot to the div tag with id "bar"
     Plotly.newPlot("bar", dataBar, layoutBar);
 
-    // Bubble chart
+
+    // ----- BUBBLE CHART ----- //
+
+    // Create the trace for the bubble chart
     let traceBubble = {
         x: otu_ids,
         y: sample_values,
@@ -98,23 +113,27 @@ function charts(sampleID) {
         }
     };
 
+    // Create the data array for the bubble chart
     let dataBubble = [traceBubble];
 
+    // Set layout details for the bubble chart
     let layoutBubble = {
         title: "Sample information",
         hovermode: "closest",
         xaxis: {title: "OTU ID"}
     };
 
+    // Render the plot to the div tag with id "bubble"
     Plotly.newPlot("bubble", dataBubble, layoutBubble);
   });
 };
   
 
-// Demographic Info
+// SAMPLE METADATA
+// Create a function to get an individual's Demographic Information
 function demoInfo(sampleID) {
 
-    // Use D3 to retrieve all of the data
+    // Use D3 to retrieve all data
     d3.json(url).then((data) => {
 
     // Retrieve all metadata
@@ -129,25 +148,14 @@ function demoInfo(sampleID) {
     // Use D3 to select the Demographic Info box and clear any existing data
     let demoInfoBox = d3.select("#sample-metadata").html("");
 
-    // Use Object.entries to add each key/value pair to the panel
+    // Add key/value details from the filtered sample data to the demographic info box
     Object.entries(firstSample).forEach(([key, value]) => {
-
-        // // Log the individual key/value pairs as they are being appended to the metadata panel
-        // console.log(key,value);
 
         demoInfoBox.append("h5").text(`${key.toUpperCase()}: ${value}`);
         });
-
   });
 };
 
 
-
-
-// Pull data for new subject into demo and visuals. 
-function optionChanged(newSample) {
-charts(newSample);
-demo(newSample);
-}
-
+// Call the initialization function
 init();
