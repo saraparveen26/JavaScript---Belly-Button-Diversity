@@ -37,7 +37,7 @@ function init() {
         charts(sampleFirst);
         demoInfo(sampleFirst);
     });
-    }
+    };
 
 
 // UPDATE THE CHARTS AND DEMOGRAPHIC INFO 
@@ -45,7 +45,7 @@ function init() {
 function optionChanged(sampleNew) {
     charts(sampleNew);
     demoInfo(sampleNew);
-    }
+    };
 
 
 // BUILD THE BAR AND BUBBLE CHARTS   
@@ -85,14 +85,14 @@ function charts(sampleID) {
 
     // Set layout details for the bar chart
     let layoutBar = {
-        title: "Top 10 OTUs found in Individual " + sampleID,
+        title: `<b>Top 10 OTUs found in Individual ${sampleID}</b>`,
         // margin:{
         //     l:100,
         //     r:100,
         //     t:100,
         //     b:100
         // }
-    }
+    };
   
     // Render the plot to the div tag with id "bar"
     Plotly.newPlot("bar", dataBar, layoutBar);
@@ -118,7 +118,7 @@ function charts(sampleID) {
 
     // Set layout details for the bubble chart
     let layoutBubble = {
-        title: "Sample information",
+        title: "<b>Sample information</b>",
         hovermode: "closest",
         xaxis: {title: "OTU ID"}
     };
