@@ -36,6 +36,7 @@ function init() {
         // Create the initial plots and demographic info
         charts(sampleFirst);
         demoInfo(sampleFirst);
+        gaugeChart(sampleFirst);
     });
     };
 
@@ -45,6 +46,7 @@ function init() {
 function optionChanged(sampleNew) {
     charts(sampleNew);
     demoInfo(sampleNew);
+    gaugeChart(sampleNew);
     };
 
 
@@ -153,6 +155,76 @@ function demoInfo(sampleID) {
 
         demoInfoBox.append("h5").text(`${key.toUpperCase()}: ${value}`);
         });
+  });
+};
+
+
+// GAUGE CHART
+// Create a function to build the gauge chart
+function gaugeChart(sampleID) {
+
+    // Use D3 to retrieve all data
+    d3.json(url).then((data) => {
+
+    // Retrieve all metadata containing demographic information
+    let metadata = data.metadata;
+
+    // Filter sample data by id
+    let filteredSample = metadata.filter(sample => sample.id == sampleID);
+
+    // Get the first sample
+    let firstSample = filteredSample[0]
+
+    // Create the trace for top 10 items for the bar chart
+    let traceGauge = {
+        domain: { x: [0, 1], y: [0, 1] },
+        value: firstSample.wfreq,
+        title: {
+            text: "<b>Belly Button Washing frequency</b><br>Scrubs per Week", 
+            font: {size: 20}
+        },
+        type: "indicator",
+        direction: "clockwise",
+        mode: "gauge+number",
+        gauge: {
+            axis: { range: [null, 9],
+                tickmode: "linear"},
+            shape: "angular",
+            bgcolor: "white",
+            borderwidth: 1,
+            bordercolor: "gray",
+            steps: [
+                { range: [0, 1], color: "rgba(230, 220, 200, .5)" },
+                { range: [1, 2], color: "rgba(210, 205, 150, .5)" },
+                { range: [2, 3], color: "rgba(190, 200, 90, .5)" },
+                { range: [3, 4], color: "rgba(170, 200, 40, .5)" },
+                { range: [4, 5], color: "rgba(120, 160, 20, .5)" },
+                { range: [5, 6], color: "rgba(20, 130, 0, .5)" },
+                { range: [6, 7], color: "rgba(15, 100, 0 ,.5)" },
+                { range: [7, 8], color: "rgba(10, 80, 0, .5)" },
+                { range: [8, 9], color: "rgba(7, 60, 0, .5)" }
+            ],
+            threshold: {
+                line: { color: "red", width: 5 },
+                thickness: 1.5,
+                value: firstSample.wfreq
+              }
+        }
+   };
+
+    // Create the data array for the bar chart
+    let dataGauge = [traceGauge];
+
+    // Set layout details for the bar chart
+    let layoutGauge = {
+        width: 400,
+        height: 400,
+        margin: { t: 25, r: 25, l: 25, b: 25 },
+      };
+    
+    // Render the plot to the div tag with id "gauge"
+    Plotly.newPlot("gauge", dataGauge, layoutGauge);
+    
   });
 };
 
