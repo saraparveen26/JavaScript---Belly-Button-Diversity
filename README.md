@@ -43,7 +43,7 @@ This step creates a bubble chart which updates with the individual selected in t
 
 Following is an example of the bubble chart displayed for individual # 940:
 
-![Bubble Chart](Images/bubble_chart.PNG)
+![Bubble Chart](Images/bubble_chart.png)
 
 
 ## Step 4: Create Demographic Information Box
