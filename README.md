@@ -71,3 +71,4 @@ The functions created for all the plots are added to the initialization function
 Following is an example of the complete dashboard displayed for individual # 940:
 
 ![Dashboard](Images/dashboard.PNG)
+
