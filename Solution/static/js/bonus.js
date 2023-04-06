@@ -68,24 +68,31 @@ function gaugeChart(sampleID) {
             font: {size: 20}
         },
         type: "indicator",
+        direction: "clockwise",
         mode: "gauge+number",
         gauge: {
-            axis: { range: [null, 9], tickmode: "linear" },
+            axis: { range: [null, 9],
+                tickmode: "linear"},
             shape: "angular",
             bgcolor: "white",
             borderwidth: 1,
             bordercolor: "gray",
             steps: [
-                { range: [0, 1], color: "cyan" },
-                { range: [1, 2], color: "cyan" },
-                { range: [2, 3], color: "cyan" },
-                { range: [3, 4], color: "cyan" },
-                { range: [4, 5], color: "cyan" },
-                { range: [5, 6], color: "cyan" },
-                { range: [6, 7], color: "cyan" },
-                { range: [7, 8], color: "cyan" },
-                { range: [8, 9], color: "cyan" }
+                { range: [0, 1], color: "rgba(230, 220, 200, .5)" },
+                { range: [1, 2], color: "rgba(210, 205, 150, .5)" },
+                { range: [2, 3], color: "rgba(190, 200, 90, .5)" },
+                { range: [3, 4], color: "rgba(170, 200, 40, .5)" },
+                { range: [4, 5], color: "rgba(120, 160, 20, .5)" },
+                { range: [5, 6], color: "rgba(20, 130, 0, .5)" },
+                { range: [6, 7], color: "rgba(15, 100, 0 ,.5)" },
+                { range: [7, 8], color: "rgba(10, 80, 0, .5)" },
+                { range: [8, 9], color: "rgba(7, 60, 0, .5)" }
             ],
+            threshold: {
+                line: { color: "red", width: 5 },
+                thickness: 1.5,
+                value: firstSample.wfreq
+              }
         }
    };
 
