@@ -72,3 +72,7 @@ Following is an example of the complete dashboard displayed for individual # 940
 
 ![Dashboard](Images/dashboard.PNG)
 
+
+## Step 7: Update all Plots on the Dashboard
+
+The dashboard is deployed to GitHub pages. The link is https://saraparveen26.github.io/belly-button-challenge/
